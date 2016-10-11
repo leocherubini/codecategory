@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /vendor
 /.idea
 composer.phar
-.DS_Store
+node_modules/
+.env.*.php
+.env.php
+.env
