@@ -5,6 +5,7 @@ namespace CodePress\CodeCategory\Models;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\SluggableInterface;
 use Cviebrock\EloquentSluggable\SluggableTrait;
+use Illuminate\Contracts\Validation\Validator;
 
 class Category extends Model implements SluggableInterface
 {
@@ -12,6 +13,11 @@ class Category extends Model implements SluggableInterface
 	use SluggableTrait;
 
 	protected $table = "codepress_categories";
+
+	/**
+	 * @var Validator
+	 */
+	private $validator;
 
 	protected $sluggable = [
 		'build_from' => 'name',
@@ -25,6 +31,30 @@ class Category extends Model implements SluggableInterface
 		'active',
 		'parent_id'
 	];
+
+	public function setValidator(Validator $validator)
+	{
+		$this->validator = $validator;
+	}
+
+	public function getValidator()
+	{
+		return $this->validator;
+	}
+
+	public function isValid()
+	{
+		$validator = $this->validator;
+		$validator->setRules(['name'=>'required|max:255']);
+		$validator->setData($this->attributes);
+
+		if($validator->fails()) {
+			$this->errors = $validator->errors();
+			return false;
+		}
+
+		return true;
+	}
 
 	public function categorizable()
 	{
