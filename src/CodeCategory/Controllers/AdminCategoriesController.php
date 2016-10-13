@@ -45,4 +45,31 @@ class AdminCategoriesController extends Controller
 
 		return redirect()->route('admin.categories.index');
 	}
+
+	public function edit($id)
+	{
+		$categories = $this->categoryModel->all();
+		$category = $this->categoryModel->find($id);
+
+		return view('codecategory::edit', compact('categories', 'category'));
+	}
+
+	public function update($id, Request $request)
+	{
+		$data = $request->all();
+		if(!isset($data['active']))
+			$data['active'] = 0;
+
+		$this->categoryModel->find($id)->update($data);
+
+		return redirect()->route('admin.categories.index');
+	}
+
+	public function destroy($id)
+	{
+		$this->categoryModel->find($id)->delete();
+
+		return redirect()->route('admin.categories.index');
+	}
+
 }
